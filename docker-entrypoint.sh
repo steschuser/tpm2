@@ -13,6 +13,10 @@ echo "starting tpm2-abrmd "
 tpm2-abrmd --allow-root --tcti=mssim > /opt/tpm2simulator/log/abrmd.log 2>&1
 
 export TPM2TOOLS_TCTI="mssim:host=localhost,port=2321"
-
+export TPM2TSSENGINE_TCTI="mssim:host=localhost,port=2321"
+export TPM2_PKCS11_STORE="$HOME/.tpm2_pkcs11"
+export TPM2_PKCS11_TCTI="mssim:host=localhost,port=2321"
 cd ~
+mkdir $TPM2_PKCS11_STORE
+
 /bin/bash
