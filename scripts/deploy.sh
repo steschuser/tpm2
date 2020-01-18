@@ -1,18 +1,18 @@
 #!/bin/bash
 
+EK_HANDLE=0x81010001
 AK_HANDLE=0x81010002
-
 # Clear TPM2
 tpm2_clear
 
 # Create Endorsment Key
 echo "create EK"
-tpm2_createek -c ek.ctx -G rsa -u ek.pub
+tpm2_createek  -G rsa -u ek.pub -c "$EK_HANDLE"
 tpm2_flushcontext -t
 # Create Attestation Key
 ## create AK
 echo "create AK"
-tpm2_createak -C ek.ctx -c ak.ctx -G rsa -g sha256 -s rsassa
+tpm2_createak -C "$EK_HANDLE" -c ak.ctx -G rsa -g sha256 -s rsassa
 
 ## store in NV at 0x81010002
 tpm2_evictcontrol -C o -c ak.ctx "$AK_HANDLE"
