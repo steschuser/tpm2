@@ -1,4 +1,4 @@
-FROM debian:buster
+FROM ubuntu:eoan
 # Change these for different version
 ARG simulator_url="https://downloads.sourceforge.net/project/ibmswtpm2/"
 #ARG simulator_file="ibmtpm1563.tar.gz"
@@ -31,6 +31,11 @@ RUN cd /opt && git clone https://github.com/tpm2-software/tpm2-pkcs11.git
 RUN cd /opt/tpm2-pkcs11 && ./bootstrap && ./configure --prefix=/usr && make && make install
 RUN ldconfig
 
+# Install tpm2-tss-engine
+RUN cd /opt && git clone https://github.com/tpm2-software/tpm2-tss-engine.git
+RUN cd /opt/tpm2-tss-engine && ./bootstrap && ./configure --prefix=/usr && make && make install
+RUN ldconfig
+
 
 # Build Simulator
 RUN echo ${simulator_url}${simulator_file} &&  mkdir /opt/tpm2simulator && wget ${simulator_url}${simulator_file} -O /opt/tpm2simulator/${simulator_file}
@@ -41,6 +46,8 @@ RUN cd src && make
 
 RUN ldconfig
 
+# Copy our scrips
+COPY scripts /root/scripts
 # Copy our entrypoint
 COPY docker-entrypoint.sh /usr/local/bin/
 WORKDIR /root
